@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f3edd8;
+    --card: #f7f1de;
+    --ink: #2e271c;
+    --ink-soft: rgba(46,39,28,0.62);
+    --line: rgba(46,39,28,0.35);
+    --line-faint: rgba(46,39,28,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image: radial-gradient(rgba(46,39,28,0.04) 1px, transparent 1px);
+    background-size:4px 4px;
+    color:var(--ink);
+    font-family:'Lora', serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .wrap{max-width:620px; width:100%; margin:0 auto; padding:0 20px 70px;}
+
+  /* The pocket the card lives in */
+  .pocket{
+    margin:36px auto 0;
+    max-width:460px;
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-bottom:none;
+    border-radius:8px 8px 0 0;
+    padding:10px 18px 26px;
+    text-align:center;
+    position:relative;
+    z-index:1;
+  }
+  .pocket .label{
+    font-family:'Courier Prime', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+
+  /* The card itself, sliding up out of the pocket */
+  .card-slide{
+    position:relative;
+    z-index:2;
+    margin-top:-18px;
+    animation:slideUp 0.7s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes slideUp{
+    from{ transform:translateY(46px); opacity:0; }
+    to{ transform:translateY(0); opacity:1; }
+  }
+
+  main.card{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:2px 14px 2px 2px;
+    padding:26px 26px 30px;
+    box-shadow:0 10px 0 -6px rgba(46,39,28,0.12), 5px 5px 0 rgba(46,39,28,0.1);
+  }
+
+  h1.title{
+    font-family:'Courier Prime', monospace;
+    font-weight:700;
+    font-size:clamp(24px,5.5vw,32px);
+    margin:0 0 4px;
+    letter-spacing:0.01em;
+    text-align:center;
+  }
+  .sub{
+    font-family:'Lora', serif; font-style:italic; font-size:14px;
+    color:var(--ink-soft); margin:0 0 18px;
+    text-align:center;
+  }
+
+  /* Catalog header block — like the printed top of a real card */
+  .catalog-box{
+    border:1px solid var(--ink);
+    margin-bottom:20px;
+  }
+  .catalog-box .row{
+    display:flex;
+    border-bottom:1px solid var(--line);
+  }
+  .catalog-box .row:last-child{border-bottom:none;}
+  .catalog-box .cell-label{
+    font-family:'Courier Prime', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    width:110px;
+    flex-shrink:0;
+    padding:7px 10px;
+    border-right:1px solid var(--line);
+    background:rgba(46,39,28,0.03);
+  }
+  .catalog-box .cell-value{
+    font-family:'Lora', serif;
+    font-size:15px;
+    padding:7px 10px;
+    flex:1;
+  }
+
+  /* Tabs, styled minimal, like typed section labels */
+  nav.tabs{
+    display:flex;
+    justify-content:center;
+    gap:22px;
+    border-bottom:1px solid var(--ink);
+    margin-bottom:18px;
+    padding-bottom:2px;
+  }
+  nav.tabs button{
+    font-family:'Courier Prime', monospace;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:none;
+    border:none;
+    padding:4px 0 8px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    border-bottom:2px solid transparent;
+  }
+  nav.tabs button:hover{color:var(--ink);}
+  nav.tabs button.active{color:var(--ink); border-bottom-color:var(--ink);}
+
+  section{display:none;}
+  section.active{display:block; animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+
+  .clause{margin:0 0 14px; line-height:1.7; font-size:15px;}
+  .clause b{font-family:'Courier Prime',monospace; font-weight:700; color:var(--ink);}
+
+  /* Reviews = the actual "DATE DUE" ledger table */
+  table.ledger{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  table.ledger thead th{
+    font-family:'Courier Prime', monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-align:left;
+    padding:0 8px 8px;
+    border-bottom:1px solid var(--ink);
+  }
+  table.ledger tbody td{
+    padding:10px 8px;
+    border-bottom:1px dotted var(--line);
+    vertical-align:top;
+  }
+  table.ledger tbody tr{cursor:pointer; transition:background .12s ease;}
+  table.ledger tbody tr:hover{background:rgba(46,39,28,0.05);}
+  td.date{font-family:'Courier Prime',monospace; color:var(--ink); width:78px; white-space:nowrap; font-weight:700;}
+  td.reviewer{font-family:'Courier Prime',monospace; width:130px; color:var(--ink-soft);}
+  td.notes{
+    font-family:'Lora', serif; font-style:italic;
+    max-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  .overlay{display:none; position:fixed; inset:0; background:rgba(46,39,28,0.55); align-items:center; justify-content:center; padding:24px; z-index:50;}
+  .overlay.active{display:flex;}
+  .overlay-card{
+    background:var(--card); border:2px solid var(--ink); max-width:420px; width:100%;
+    padding:26px 24px 24px; position:relative; box-shadow:6px 6px 0 rgba(46,39,28,0.22);
+    animation:pop .2s ease;
+  }
+  @keyframes pop{from{transform:scale(0.94); opacity:0;} to{transform:scale(1); opacity:1;}}
+  .overlay-card .ov-date{font-family:'Courier Prime',monospace; font-weight:700; color:var(--ink); font-size:13px; letter-spacing:0.05em;}
+  .overlay-card .ov-borrower{font-family:'Courier Prime',monospace; font-size:13px; color:var(--ink-soft); margin-top:2px;}
+  .overlay-card p{font-size:15px; line-height:1.7; font-style:italic; margin:16px 0 0;}
+  .close-x{
+    position:absolute; top:12px; right:14px; font-family:'Courier Prime',monospace; font-size:13px;
+    background:none; border:1px solid var(--ink); border-radius:4px; width:26px; height:26px; cursor:pointer; color:var(--ink);
+  }
+
+  /* Apply — fill in the next blank line on the card */
+  .form-note{font-size:14px; color:var(--ink-soft); margin-bottom:20px; font-style:italic;}
+  form{display:flex; flex-direction:column; gap:18px;}
+  label{
+    font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:0.05em;
+    text-transform:uppercase; color:var(--ink-soft); margin-bottom:5px; display:block;
+  }
+  .ruled-input{
+    width:100%; font-family:'Lora',serif; font-size:15px; padding:6px 2px;
+    border:none; border-bottom:1px solid var(--ink); background:transparent; color:var(--ink);
+  }
+  .ruled-input:focus{outline:none; border-bottom:2px solid var(--ink);}
+  .ruled-input::placeholder{color:var(--ink-soft); opacity:1;}
+  textarea.ruled-input{resize:vertical; min-height:70px; line-height:1.9; background-image:repeating-linear-gradient(to bottom, transparent, transparent 27px, var(--line-faint) 28px);}
+  .submit-btn{
+    align-self:flex-start; margin-top:6px;
+    font-family:'Courier Prime',monospace; font-weight:700; font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:transparent; color:var(--ink); border:2px solid var(--ink);
+    padding:11px 22px; cursor:pointer; border-radius:3px;
+    transition:background .15s ease, color .15s ease;
+  }
+  .submit-btn:hover{background:var(--ink); color:var(--card);}
+  .submit-btn:active{transform:scale(0.97);}
+
+  footer{
+    text-align:center; font-family:'Courier Prime',monospace; font-size:11px;
+    color:var(--ink-soft); margin-top:20px; opacity:0.75; max-width:620px;
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} .card-slide{animation:none;} }
+  @media(max-width:480px){
+    .catalog-box .cell-label{width:88px;}
+    td.borrower{width:88px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="pocket"><div class="label">In Circulation — Return Promptly</div></div>
+
+  <div class="card-slide">
+    <main class="card">
+      <h1 class="title">Currently Available</h1>
+      <p class="sub">First edition, original.</p>
+
+      <div class="catalog-box">
+        <div class="row"><div class="cell-label">Title</div><div class="cell-value">[Your Name]</div></div>
+        <div class="row"><div class="cell-label">Genre</div><div class="cell-value">Romantic comedy, literary, classics</div></div>
+        <div class="row"><div class="cell-label">Call No.</div><div class="cell-value">BK-2026-.S646 — Romance</div></div>
+      </div>
+
+      <nav class="tabs">
+        <button class="active" data-tab="about">Catalog Entry</button>
+        <button data-tab="reviews">Marginalia</button>
+        <button data-tab="apply">Request a Hold</button>
+      </nav>
+
+      <section id="about" class="active">
+        <p class="clause"><b>Description.</b> First edition, minor edits ongoing. Reads fast, rereads well.</p>
+        <p class="clause"><b>Contents.</b> Stand-up comedy, several strong opinions on frozen dessert texture, at least one Korean holiday potluck per season, and a ballet habit more consistent than most people's jobs.</p>
+        <p class="clause"><b>Reader's advisory.</b> Not for those who need a lot of hand-holding. Best enjoyed by people who can take a joke and land one back.</p>
+      </section>
+
+      <section id="reviews">
+        <p class="clause" style="font-size:14px; color:var(--ink-soft);">Kept well-read and in circulation by the following:</p>
+        <table class="ledger">
+          <thead><tr><th>Date</th><th>Reviewer</th><th>Notes</th></tr></thead>
+          <tbody id="ledgerBody"></tbody>
+        </table>
+      </section>
+
+      <section id="apply">
+        <p class="form-note">Fill out the form to request a hold.</p>
+        <form id="dateForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <div>
+            <label for="name">Full Name</label>
+            <input class="ruled-input" type="text" id="name" name="name" required>
+          </div>
+          <div>
+            <label for="contact">Contact Information</label>
+            <input class="ruled-input" type="text" id="contact" name="contact" placeholder="Phone, email, courier pigeon" required>
+          </div>
+          <div>
+            <label for="currentread">Current Read</label>
+            <input class="ruled-input" type="text" id="currentread" name="currentread" placeholder="What are you reading right now?" required>
+          </div>
+          <div>
+            <label for="pitch">Why should this checkout be approved?</label>
+            <textarea class="ruled-input" id="pitch" name="pitch" required></textarea>
+          </div>
+          <div>
+            <label for="qualify">Relevant qualifications (optional)</label>
+            <input class="ruled-input" type="text" id="qualify" name="qualify" placeholder="e.g., good at karaoke, leaves good margin notes, can hang at a potluck">
+          </div>
+          <button type="submit" class="submit-btn">Request Hold</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <footer>NO LATE FEES &nbsp;·&nbsp; JUST GOOD COMPANY</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <button class="close-x" id="closeOverlay">✕</button>
+    <div class="ov-date" id="ovDate"></div>
+    <div class="ov-borrower" id="ovBorrower"></div>
+    <p id="ovText"></p>
+  </div>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('nav.tabs button');
+  const sections = document.querySelectorAll('main.card > section');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      tabs.forEach(t=>t.classList.remove('active'));
+      sections.forEach(s=>s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Ledger entries — replace with real reviews
+  const entries = [
+    {date:"07-25-26", reviewer:"J. (friend, 6 yrs)", text:"Organized an entire Chuseok potluck via group chat chaos and somehow everyone showed up on time. Terrifying organizational skills."},
+    {date:"06-02-26", reviewer:"H. (roommate)", text:"Did a stand-up bit about me at my own birthday party. It was accurate. I'm still recovering."},
+    {date:"04-19-26", reviewer:"M. (coworker)", text:"Left the job without a backup plan and seemed more relaxed about it than any of us were. Unsettling levels of confidence."},
+    {date:"02-11-26", reviewer:"A. (ballet class)", text:"Shows up to 8am class more consistently than she showed up to any job I know of. Draw your own conclusions."}
+  ];
+
+  const body = document.getElementById('ledgerBody');
+  entries.forEach(e=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="date">${e.date}</td><td class="reviewer">${e.reviewer}</td><td class="notes">${e.text}</td>`;
+    tr.addEventListener('click', ()=> openOverlay(e));
+    body.appendChild(tr);
+  });
+
+  const overlay = document.getElementById('overlay');
+  function openOverlay(e){
+    document.getElementById('ovDate').textContent = e.date;
+    document.getElementById('ovBorrower').textContent = e.reviewer;
+    document.getElementById('ovText').textContent = '"' + e.text + '"';
+    overlay.classList.add('active');
+  }
+  document.getElementById('closeOverlay').addEventListener('click', ()=> overlay.classList.remove('active'));
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') overlay.classList.remove('active'); });
+</script>
+</body>
+</html>
