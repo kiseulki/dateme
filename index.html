@@ -247,13 +247,13 @@
       </div>
 
       <nav class="tabs">
-        <button class="active" data-tab="about">Catalog Entry</button>
+        <button class="active" data-tab="about">Description</button>
         <button data-tab="reviews">Marginalia</button>
         <button data-tab="apply">Request a Hold</button>
       </nav>
 
       <section id="about" class="active">
-        <p class="clause"><b>Description.</b> <b>Outrageous plot, side quests encouraged, strong opinions only. Reads fast, rereads well.</b></p>
+        <p class="clause"><b>Outrageous plot, side quests encouraged, strong opinions only. Reads fast, rereads well.</b></p>
         <p class="clause">A wildly entertaining account of one woman's determination to amuse herself first and ask questions later. A stubborn idealist, she really believes the best is yet to come.</p>
         <p class="clause">Friends describe her as impossible to keep up with and even harder to say no to. She's deep into her 189th book of the year, hosts anyone who'll show up, and collects hats and stories in roughly equal number.</p>
         <p class="clause">She keeps a standing appointment with ballet, whether trying to plié deeper or watching (gasping) professionals, and treats Brooklyn as one long walk still being mapped, block by block, neighborhood by neighborhood, in search of whatever's around the corner.</p>
@@ -323,8 +323,9 @@
 
   // Ledger entries — replace with real reviews
   const entries = [
-    {date:"07-25-26", reviewer:"J. (friend, 6 yrs)", text:"Organized an entire Chuseok potluck via group chat chaos and somehow everyone showed up on time. Terrifying organizational skills."},
-    {date:"06-02-26", reviewer:"H. (roommate)", text:"Did a stand-up bit about me at my own birthday party. It was accurate. I'm still recovering."},
+    {date:"05-25-26", reviewer:"Lizzy (friend)", text:"Michelle’s the kind of person who somehow knows exactly which book to recommend when your life is falling apart, changing directions, or just feeling a little stagnant. She brings people together naturally in a genuine “my worlds should know each other” way. Spending time with her usually means leaving with new ideas, new perspectives, and at least three new restaurants, podcasts, or hobbies to look into.<br><br>She has warm-chaotic energy in the best sense. Example: she once fully attempted to install a ceiling light herself before realizing the ladder wasn’t tall enough and reluctantly calling TaskRabbit. That’s her in a nutshell - ambitious, curious, independent, and willing to try first.<br><br>She’s also one of the rare people who gives you her complete attention in conversation. You feel listened to around her. And when she gets interested in something, whether it’s tea, hiking, or a random niche topic, she dives all the way in and somehow becomes strangely knowledgeable within days.<br><br>The right person for her is probably someone intelligent, grounded, emotionally generous, and excited about the world. Someone who can match her curiosity while also bringing steadiness and joy into her life. 🫰🏼"},
+    {date:"06-01-26", reviewer:"Kerri (friend)", text:"<b>M</b>om and dad will love her<br><b>I</b>ntelligent, and emotionally intelligent too<br><b>C</b>ute, very cute<br><b>H</b>onestly a great catch<br><b>E</b>asily will fit in with your friend group<br><b>L</b>ovely to discuss every imaginable topic with<br><b>L</b>ovely to host memorable events with<br><b>E</b>asily one of the best decisions you'll make"}
+    {date:"06-12-26", reviewer:"Linda (friend)", text:"Top percentile of hobbyists. Best walking buddy for life. Will engage you in the whole spectrum of conversation types. One of the most loyal, loving and lovable humans you’ll ever know. Can make a new friend in the time it takes an average person to order food off a menu and will get you lots of free things. Will keep you grounded and tell you when you have food in your teeth or more serious issues. Life with Michelle will always be interesting. You would be so lucky to date Michelle! ❤️"},
     {date:"04-19-26", reviewer:"M. (coworker)", text:"Left the job without a backup plan and seemed more relaxed about it than any of us were. Unsettling levels of confidence."},
     {date:"02-11-26", reviewer:"A. (ballet class)", text:"Shows up to 8am class more consistently than she showed up to any job I know of. Draw your own conclusions."}
   ];
@@ -339,11 +340,11 @@
 
   const overlay = document.getElementById('overlay');
   function openOverlay(e){
-    document.getElementById('ovDate').textContent = e.date;
-    document.getElementById('ovBorrower').textContent = e.reviewer;
-    document.getElementById('ovText').textContent = '"' + e.text + '"';
-    overlay.classList.add('active');
-  }
+  document.getElementById('ovDate').textContent = e.date;
+  document.getElementById('ovBorrower').textContent = e.reviewer;
+  document.getElementById('ovText').innerHTML = '"' + e.text + '"';
+  overlay.classList.add('active');
+}
   document.getElementById('closeOverlay').addEventListener('click', ()=> overlay.classList.remove('active'));
   overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.classList.remove('active'); });
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') overlay.classList.remove('active'); });
